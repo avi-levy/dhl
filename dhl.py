@@ -1,7 +1,27 @@
 #!/usr/bin/env python
 import sys
-import bitarray
+import math
+from collections import defaultdict
 # A set S is admissible if it is not a complete set of residue classes mod anything.
+
+# Assume k is even.
+# richards(m, k) is the set:
+# \pm 1, \pm p_{m+1}, \pm p_{m+2}, ..., \pm p_{m-1+k/2}
+
+def make_richards(m):
+    global k
+    richards = set([-1,1])
+    for i in range(1, k/2):
+        richards.add(natural_primes[m + i - 2]) # p_{m+i}
+        richards.add(-natural_primes[m + i - 2])
+    return richards
+    
+def update(richards):
+    global k
+    richards.remove(natural_primes[last_remove])
+    richards.remove(-natural_primes[last_remove])    
+    richards.add(natural_primes[last_remove+k/2])
+    richards.add(-natural_primes[last_remove+k/2])
 
 # The following function was written by Robert Hanks
 # http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
@@ -11,81 +31,77 @@ def make_primes(n):
     for i in xrange(3,int(n**0.5)+1,2):
         if sieve[i]:
             sieve[i*i::2*i]=[False]*((n-i*i-1)/(2*i)+1)
-    return [i for i in xrange(3,n,2) if sieve[i]] # don't bother including 2 because nothing covers it
+    return [i for i in xrange(3,n,2) if sieve[i]] # we don't need 2
     
-def covers_all(H, p):
-    residues = [False] * p
-    for h in H:
-        residues[h % p] = True
-    for i in range(p):
-        if not residues[i]:
+def covers_all(H, p): # kind of memoized
+    global last_witness
+    global last_set
+    if (not last_witness) or (not last_set) or (last_witness is not p):
+        last_set = defaultdict(set)
+        for h in H:
+            last_set[h % p].add(h)
+        for v in last_set.itervalues():
+            if not v:
+                last_witness = None
+                return False
+        return True
+    else:
+        temp = natural_primes[last_remove]
+        a = temp % p
+        last_set[a].remove(temp)
+        temp = -natural_primes[last_remove]      
+        b = temp % p          
+        last_set[b].remove(temp)        
+        temp = natural_primes[last_remove+k/2]
+        last_set[temp % p].add(temp)
+        temp = -natural_primes[last_remove+k/2]        
+        last_set[temp % p].add(temp)
+        if last_set[a] and last_set[b]:
+            return True
+        last_witness = None
+        return False                
+
+def is_admissible(richards):
+    global k
+    for p in primes:
+        if covers_all(richards, p):
+            print "Witness %s" % p
             return False
     return True
 
-def is_admissible(richards, killer, k):
-    print killer
-    if killer:
-        if covers_all(richards, killer):
-            print "Witness %s worked again" % killer
-            return (False, killer)
-            
-    for p in primes:
-        if killer and p == killer:
-            continue
-        if covers_all(richards, p):
-            print "Witness %s" % p
-            return (False, p)
-        if p > k:
-            return (True, None)
-    # exhausted our list of primes
-    return True
-
-# Assume k is even.
-# richards(m, k) is the set:
-# \pm 1, \pm p_{m+1}, \pm p_{m+2}, ..., \pm p_{m-1+k/2}
-# with k elements
-# \pm primes[m-1], ..., \pm primes[m-3+k/2]
-#
-# As a speedup, we use the following:
-# richards(m+1, k) = richards(m, k) \ { \pm primes[m-1] } U { \pm primes[m-2+k/2] }
 
 k = 10000 #341640 # default for k
+
+# bounds on m
+start = 360
+end = 385
 
 if len(sys.argv) > 1:
     k = sys.argv(1)
 
-primes = sorted(make_primes(k), reverse=True) # primes 2 < p < k; primes[i] = p_{l + 1 - i}
-l = len(primes)
+primes = sorted(make_primes(k), reverse=True) # primes 2 < p < k
+l = len(primes) # primes[i] = p_{l + 1 - i}
 
-exit()
-
-# m starts at start + 1
-start = 360
-end = 365
+natural_primes = make_primes(int(math.log(k)*k)) # primes 2 < p, natural_primes[i] = p_{i+2}
 
 # For a given k, find a set H subject to:
 # |H|=k
 # diam(H) is small
 # H doesn't cover any p
 
-# the killer prime
-killer = None
+last_witness = None
+last_set = None
+last_remove = None
 
-# build richards(start, k)
-richards = set([-1,1])
-for i in range(start - 1, start - 2 + k/2):
-    richards.add(primes[i])
-    richards.add(-primes[i])
+richards = make_richards(start)
 for m in range(start, end):
-    truth, new_killer = is_admissible(richards, killer, k)
-    if truth:
+    if is_admissible(richards):
         print "Found m = %s, width = %d" % (m, max(richards) - min(richards))    
         exit()
 
-    killer = new_killer
     # update the richards set
-    richards.remove(primes[m-1])
-    richards.remove(-primes[m-1])    
-    richards.add(primes[m-2+k/2])
-    richards.add(-primes[m-2+k/2])
+    # richards(m+1, k) = richards(m, k) \ { \pm p_{m + 1} } U { \pm p_{m + k/2 + 1} }
+    
+    last_remove = m-1
+    update(richards)
 
