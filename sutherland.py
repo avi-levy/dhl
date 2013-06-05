@@ -28,14 +28,15 @@ def sieve(low, high, k): # interval [low, high] sieved to T. assume low, high ar
             if a[i]:
                 d[i % p] += 1
         m = None
-        for i in xrange(p): # compute minimal residue class
+        for i in xrange(p): # compute the residue class, j, with fewest elements
             if not m or d[i] < m:
                 j = i
                 m = d[i]
-        for i in r:
-            if a[i] and i % p is j:
-                a[i] = False
-    return [i for i in r if a[i]][-k:] # last k elements of sifted set
+        if m > 0: # sift out the class j, if necessary
+            for i in r:
+                if a[i] and i % p is j:
+                    a[i] = False
+    return [low + 2*i for i in r if a[i]][-k:] # last k elements of sifted set
 out = sieve(2, 399664, 34429)
 print out[:100]
 print out[-100:]
