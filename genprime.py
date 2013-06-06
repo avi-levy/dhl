@@ -11,6 +11,6 @@ def primes(n):
     return [i for i in xrange(3,n,2) if sieve[i]] 
     
 f = open('primes.txt','w')
-for p in primes(34429 + 1):
+for p in primes(200000):
   f.write("%s\n" % p)
 f.close()
