@@ -27,7 +27,7 @@ def sieve(low, high, k): # sieve the interval [low, high] to make it admissible
     B = high - low # assume low, high are both even
     r = xrange(1 + B/2) # choose coordinates that automatically sift out 1 mod 2
     a = [True] * (1 + B/2) # a[i] is a boolean signifying whether (low + 2i) is in the sifted set
-    c = int(sqrt(B))
+    c = 443#int(sqrt(B))
     small, midsize = make_primes(c, k+1)
     print "Sifting out 0 mod p for 2 < p < %s" % c
     for p in small: # sieve out 0 mod p
@@ -50,9 +50,9 @@ def sieve(low, high, k): # sieve the interval [low, high] to make it admissible
                 if a[i] and ((low + 2*i) % p == j):
 #                    print "removing %s" % (low + 2*i)
                     a[i] = False
-    return [low + 2*i for i in r if a[i]][-k:] # last k elements of sifted set
+    return [low + 2*i for i in r if a[i]][:k] # last k elements of sifted set
 
-out = sieve(-185662, 202456, 34429)
+out = sieve(-169844, 219160, 34429)
 
 # show part of the head/tail of the list
 print out[:100]
