@@ -15,9 +15,9 @@ def make_primes(m, n):
             sieve[i*i::2*i]=[False]*((n-i*i-1)/(2*i)+1)
     return [i for i in xrange(3,n,2) if sieve[i] and i >= m]
 
-def sieve(low, high, k): # interval [low, high] sieved to T. assume low, high are even
-    B = high - low
-    r = xrange(1 + B/2)    
+def sieve(low, high, k): # sieve the interval [low, high] to make it admissible
+    B = high - low # assume low, high are both even
+    r = xrange(1 + B/2) # choose coordinates that automatically sift out 1 mod 2
     a = [True] * (1 + B/2) # a[i] is a boolean signifying whether (low + 2i) is in the sifted set
     c = int(sqrt(B))
     for p in make_primes(3, c): # sieve out 0 mod p
@@ -37,10 +37,10 @@ def sieve(low, high, k): # interval [low, high] sieved to T. assume low, high ar
                 if a[i] and i % p is j:
                     a[i] = False
     return [low + 2*i for i in r if a[i]][-k:] # last k elements of sifted set
-out = sieve(2, 399664, 34429)
+out = sieve(-185662, 202456, 34429)
 print out[:100]
 print out[-100:]
-print "|H| = %s, diam(H) = %s" % (len(out), 2*(out[-1] - out[0]))
+print "|H| = %s, diam(H) = %s" % (len(out), out[-1] - out[0])
 
 '''
 avius@all-in:~/conj$ time python sutherland.py 
