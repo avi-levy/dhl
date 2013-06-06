@@ -8,7 +8,7 @@ Overview
 
 * `sutherland.py` implements [Andrew Sutherland's algorithm](http://sbseminar.wordpress.com/2013/05/30/i-just-cant-resist-there-are-infinitely-many-pairs-of-primes-at-most-59470640-apart/#comment-23566) to sift intervals until they are admissible
 * `naive-sieve.py` sifts an interval in a completely symmetric fashion, and generates non-competitive results (the sets are about a factor of 2 not dense enough it seems)
-* `dhl.py` does work properly in its current form, but it was meant to generate symmetric Richards-Henley sequences
+* `dhl.py` does *NOT* work properly in its current form, but it was meant to generate symmetric Richards-Henley sequences
 
 where k is an optional parameter
 
