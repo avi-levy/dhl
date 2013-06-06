@@ -69,40 +69,11 @@ primes = [] # odd primes <= 200000
 for line in open('primes.txt','r').readlines():
     primes.append(int(line))
     
-#out = sieve(-169844, 219160, 34429)
 admissible = sieve(-185662, 202456, 34429)
 
-H = []
-for line in open('admissable.txt','r').readlines():
-    H.append(int(line))
+print "|H| = %s, diam(H) = %s" % (len(admissible), max(admissible)-min(admissible))
 
-for h in H:
-    if h not in admissible:
-        print "Not in my sieve: %s" % h
-        exit()
-print "Everything is in my sieve so far..."
-print "|H| = %s, diam(H) = %s" % (len(out), max(out)-min(out))
-
-# seat-of-the-pants verification
-small_primes = [3,5,7,11,13,17,19,23,29,31,37,41,43,47,607,613,617,619]
-midsize_primes = [631, 641, 643, 1019, 2909, 5701, 10009, 19139, 33377, 34421, 34429]
-for i in out:
-    if i in small_primes:
-        print "Oh no, actually had %s" % i
-for p in midsize_primes:
-    def empty_residue(q):
-        for i in range(q):
-            def has(w):
-                for l in out:
-                    if l % q == w:
-#                        print "has %s = %s mod %s" % (l, w, q)
-                        return True
-                return False
-            if not has(i):
-                return i
-        return None
-    a = empty_residue(p)
-    if a is None:
-        print "Oh no, the prime %s is actually covered!" % p
-    else:
-        print "Admissible mod %s because there is no element %s mod %s" % (p, a, p)
+f = open('admissible-py.txt','w')
+for h in sorted(admissible):
+  f.write("%s\n" % h)
+f.close()

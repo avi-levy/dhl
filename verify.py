@@ -2,16 +2,19 @@
 
 # Verification
 H = []
-for line in open('admissable.txt','r').readlines():
+for line in open('admissible-py.txt','r').readlines():
     H.append(int(line))
 
 primes = []
 for line in open('primes.txt','r').readlines():
     primes.append(int(line))
-    
+
+diam = max(H) - min(H)
 for p in primes:
+    if p > diam:
+        break
     def empty_residue(q):
-        for i in xrange(q):
+        for i in range(q):
             def has(w):
                 for l in H:
                     if l % q == w:
@@ -27,3 +30,4 @@ for p in primes:
     else:
         print "Admissible mod %s because there is no element %s mod %s" % (p, a, p)
 
+print "The set is admissible"
