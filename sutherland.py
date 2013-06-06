@@ -9,7 +9,7 @@ def construct(a, b, cutoff):
     print "Sifting out small odd primes" # construct the set [+- 2^n * p] ^ [-a, b] where p is 1 or a prime > cutoff
     sift = []
     def sift_build(end, sign):
-        r = range(int(log(end,2)/2))    
+        r = range(1,int(log(end,2)/2))    
         for p in primes:
             if p <= cutoff:
                 continue
@@ -21,30 +21,25 @@ def construct(a, b, cutoff):
                     break
                 sift.append(q if sign else -q)
     sift_build(a, False)
-    sift.extend([-2**j for j in range(int(log(a,2))+1)])
-    sift.extend([ 2**j for j in range(int(log(b,2))+1)])
+    sift.extend([-2**j for j in range(1,int(log(a,2))+1)])
+    sift.extend([ 2**j for j in range(1,int(log(b,2))+1)])
     sift_build(b, True)
     return sift
 
-def sieve(low, high, k): # Sieve the interval [low/2, high/2] to make it admissible away from 2
-    a = -low/2
-    b = high/2
+def sieve(a, b, k): # Sieve the interval [a, b] to make it admissible
+    a = -a
     if not (a > 0 and b > a): # assume 0 < a < b
         exit("Bad bounds, expected [-M, N]")
     cutoff = int(sqrt(b))
-#   These lines are commented out because to save time, we're just reading from a file right now.    
-#    sifted = construct(a, b, cutoff)
-#    num_left = len(sifted)
-#    indices = range(num_left) # for efficiency, never actually remove elements from the sift; just set them to 0
-#    if num_left <= k:
-#        print "The sieve was too restrictive; only %s elements remained." % num_left
-#        exit()
-#    else:
-#        print "After the 0 mod p sieve, %s elements remain" % num_left
-    sifted = []
-    for line in open('sift.txt','r').readlines():
-        sifted.append(int(line))        
-    indices = range(len(sifted))
+    sifted = construct(a, b, cutoff)
+    num_left = len(sifted)
+    indices = range(num_left) # for efficiency, never actually remove elements from the sift; just set them to 0
+    if num_left <= k:
+        print "The sieve was too restrictive; only %s elements remained." % num_left
+        exit()
+    else:
+        print "After the 0 mod p sieve, %s elements remain" % num_left
+
     print "Performing greedy residue removal for %s < p <= %s" % (cutoff, k)
     for p in primes:
         if p <= cutoff:
@@ -64,15 +59,11 @@ def sieve(low, high, k): # Sieve the interval [low/2, high/2] to make it admissi
             if not m or d[i] < m:
                 j = i
                 m = d[i]
-# 2389 1018 7
-        if p == 2389:
-            print d
-            exit()
         if m > 0: # sift out the class j, if necessary
             for i in indices:
                 if sifted[i] and (sifted[i] % p == j):
                     sifted[i] = 0
-    return [2*i for i in sifted if i][:k] # last k elements of sifted set
+    return [i for i in sifted if i][:k] # last k elements of sifted set
 
 primes = [] # odd primes <= 200000
 for line in open('primes.txt','r').readlines():
