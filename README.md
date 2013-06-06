@@ -39,3 +39,12 @@ real	4m44.211s
 user	4m39.420s
 sys	0m0.496s
 ```
+
+See Also
+===
+[Scott Morrison](https://github.com/semorrison/polymath8)
+[Vit Tucek](https://github.com/vit-tucek/admissible_sets)
+[Polymath8](http://michaelnielsen.org/polymath1/index.php?title=Bounded_gaps_between_primes)
+[Reading seminar](http://terrytao.wordpress.com/2013/06/04/online-reading-seminar-for-zhangs-bounded-gaps-between-primes)
+[sbseminar](http://sbseminar.wordpress.com/2013/05/30/i-just-cant-resist-there-are-infinitely-many-pairs-of-primes-at-most-59470640-apart/)
+
