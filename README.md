@@ -10,14 +10,12 @@ Overview
 * `naive-sieve.py` sifts an interval in a completely symmetric fashion, and generates non-competitive results (the sets are about a factor of 2 not dense enough it seems)
 * `dhl.py` does *NOT* work properly in its current form, but it was meant to generate symmetric Richards-Henley sequences
 
-where k is an optional parameter
-
 Results
 ===
 
 `sutherland.py` currently uses parameters sieve(-185662, 202456, 34429), which means it sieves the interval `[-185662, 202456]` looking for an admissible set with 34429 elements.
 
-Output seems to show that an admissible set is found with diameter only 357032:
+Output seems to show that an admissible set is found with diameter only **357032**:
 ```
 avius@all-in:~/conj$ time python sutherland.py 
 [-154576, -154558, -154556, -154552, -154538, -154534, -154526, -154522, -154516, -154498, -154486, -154478, -154474, -154472, -154444, -154436, -154426, -154412, -154408, -154402, -154384, -154382, -154372, -154342, -154334, -154312, -154306, -154304, -154288, -154282, -154276, -154274, -154268, -154244, -154228, -154202, -154186, -154184, -154172, -154162, -154144, -154138, -154136, -154096, -154094, -154082, -154072, -154064, -154058, -154046, -154034, -154016, -154006, -154004, -153992, -153982, -153968, -153926, -153922, -153904, -153898, -153896, -153886, -153848, -153844, -153838, -153836, -153826, -153814, -153812, -153808, -153796, -153788, -153752, -153746, -153742, -153728, -153724, -153704, -153694, -153688, -153674, -153662, -153658, -153656, -153638, -153632, -153616, -153602, -153572, -153568, -153562, -153554, -153542, -153536, -153514, -153508, -153506, -153484, -153466]
